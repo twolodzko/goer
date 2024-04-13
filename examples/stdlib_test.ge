@@ -1,0 +1,25 @@
+include("stdlib.ge").
+
+fun assert(Expr) ->
+    if
+        not Expr ->
+            exit("Assertion error");
+        _ ->
+            ok
+    end
+end.
+
+%% ====================== Tests ====================== %%
+
+println("Running tests"),
+
+assert(map([], fun(X) -> X end) == []).
+assert(map([1, 2, 3], fun(X) -> X + 10 end) == [11, 12, 13]).
+
+assert(filter([], fun(X) -> X > 0 end) == []).
+assert(
+    filter([10, 5, 3, 7, 2, 2, 5, 4, 0, 11], fun(X) -> X > 2 end) ==
+        [10, 5, 3, 7, 5, 4, 11]
+).
+
+println("OK").

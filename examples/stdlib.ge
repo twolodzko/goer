@@ -1,0 +1,37 @@
+fun println(Msg) ->
+    print(Msg ++ "\n")
+end.
+
+fun flush() ->
+    receive
+        Msg ->
+            print(Msg),
+            flush()
+    after 0 -> ok
+    end
+end.
+
+fun map
+    (Lst, Fun) ->
+        map(Lst, Fun, []);
+    ([], _, Acc) ->
+        rev(Acc);
+    (Lst, Fun, Acc) ->
+        X = last(Lst),
+        map(rest(Lst), Fun, Acc ++ Fun(X))
+end.
+
+fun filter
+    (Lst, Fun) ->
+        filter(Lst, Fun, []);
+    ([], _, Acc) ->
+        rev(Acc);
+    (Lst, Fun, Acc) ->
+        X = last(Lst),
+        if
+            Fun(X) ->
+                filter(rest(Lst), Fun, Acc ++ X);
+            _ ->
+                filter(rest(Lst), Fun, Acc)
+        end
+end.

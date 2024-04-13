@@ -1,0 +1,40 @@
+fun flush() ->
+    receive
+        Msg ->
+            print(str(Msg) ++ "\n"),
+            flush()
+    after 0 -> ok
+    end
+end.
+
+fun killall
+    ([], _) ->
+        ok;
+    (Processes, Sender) ->
+        Pid = last(Processes),
+        Pid ! {Sender, terminate},
+        killall(rest(Processes), Sender)
+end.
+
+fun loop(Linked) ->
+    receive
+        {Sender, terminate} ->
+            Sender ! {self(), bye},
+            killall(Linked, Sender),
+            exit(closed)
+    end
+end.
+
+Pid1 = spawn(fun() -> loop([]) end),
+Pid2 = spawn(fun() -> loop([Pid1]) end),
+Pid3 = spawn(fun() -> loop([Pid2]) end),
+
+print("Processes: " ++ str([Pid1, Pid2, Pid3]) ++ "\n"),
+
+Pid3 ! {self(), terminate},
+
+% wait a few milliseconds
+sleep(200),
+
+print("\nReceiving messages:\n"),
+flush().

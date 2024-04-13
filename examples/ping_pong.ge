@@ -1,0 +1,18 @@
+fun loop()->
+    receive
+        {Sender, ping} ->
+            Sender ! {self(), pong},
+            loop()
+    end
+end.
+
+Pid = spawn(loop),
+Pid ! {self(), ping},
+
+Response =
+    receive
+        {Pid, pong} -> ok
+    after 100 -> timeout
+    end,
+
+print(Response).

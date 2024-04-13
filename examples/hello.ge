@@ -1,0 +1,11 @@
+
+fun hello(Who) ->
+    print("Hello, " ++ str(Who) ++ "!")
+end.
+
+fun main() ->
+    Who = "World",
+    hello(Who)
+end.
+
+main().
