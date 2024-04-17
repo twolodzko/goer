@@ -236,8 +236,8 @@ fact(N) when N > 0 ->
 ```
 
 `goer` combines both syntaxes. The anonymous functions are written the same way, but named functions are written
-like the anonymous ones, but with the (atom-like) name after the `fun` keyword. The `fact` function from above in `goer`
-would be 
+like the anonymous ones, but with the (atom-like) name after the `fun` keyword. This syntax is similar to
+[OCaml's `function`]. The `fact` function from above in `goer` would be 
 
 ```erlang
 fun fact
@@ -375,3 +375,4 @@ Try             = 'try' Exprs 'recover' Exprs 'end'
  [`cond` in Scheme]: https://conservatory.scheme.org/schemers/Documents/Standards/R5RS/HTML/r5rs-Z-H-7.html#%_sec_4.2.1
  [tail-call optimized]: https://github.com/kanaka/mal/blob/master/process/guide.md#step-5-tail-call-optimization
  [same escape characters as Go does]: https://pkg.go.dev/strconv#Unquote
+ [OCaml's `function`]: https://dev.realworldocaml.org/variables-and-functions.html#declaring-functions-with-function
