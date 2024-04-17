@@ -167,6 +167,8 @@ func TestParseEval(t *testing.T) {
 		{"(fun (X) when X < 0 -> negative; (X) when X >= 0 -> positive end)(15).", Atom("positive")},
 		{"len([]).", Int(0)},
 		{"len([1,1+2,[]]).", Int(3)},
+		{"nth([1], 0).", Int(1)},
+		{"nth([1,2,3], 2).", Int(3)},
 		{"[] ++ [].", List{}},
 		{"[1,2] ++ [3].", List{[]Expr{Int(1), Int(2), Int(3)}}},
 		{"[] ++ [1].", List{[]Expr{Int(1)}}},
@@ -205,6 +207,7 @@ func TestParseEval(t *testing.T) {
 		{`print(foo).`, String("foo")},
 		{`print("Hello, World!").`, String("Hello, World!")},
 		{`print({1,[],"x",true}).`, String(`{1,[],"x",true}`)},
+		{`include("../examples/hello.ge").`, String("Hello, World!")},
 	}
 
 	for _, tt := range testCases {
@@ -267,6 +270,15 @@ func TestParseEvalErrors(t *testing.T) {
 		//        +--------|---(X=7)------+        |
 		//        v        v              v        v
 		{"{[2+2], X, {[foo,4,_]}} = {[4], 7, {[foo,X,false]}}.", errors.NoMatch{Variable("X"), Int(4)}},
+		{"nth(wrong, 1).", errors.NotList{Atom("wrong")}},
+		{"nth([], wrong).", errors.NotNumber{Atom("wrong")}},
+		{"nth([], -1).", errors.Custom{"invalid index"}},
+		{"nth([], 0).", errors.Custom{"invalid index"}},
+		{"nth([], 1).", errors.Custom{"invalid index"}},
+		{"nth([1,2,3], -1).", errors.Custom{"invalid index"}},
+		{"nth([1,2,3], 3).", errors.Custom{"invalid index"}},
+		{"error(wrong).", errors.NotString{Atom("wrong")}},
+		{`error("hello!").`, errors.Custom{"hello!"}},
 	}
 
 	for _, tt := range testCases {

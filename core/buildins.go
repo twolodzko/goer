@@ -21,6 +21,7 @@ type buildIn = func([]Expr, *envir.Env, pids.Pid) (Expr, error)
 // Initialize the build-in functions for the Env.
 func buildIns() map[string]Expr {
 	vars := make(map[string]Expr)
+	vars["error"] = oneArg(throwError)
 	vars["exit"] = oneArg(exit)
 	vars["include"] = include
 	vars["is_atom"] = oneArg(is_type[Atom])
@@ -31,6 +32,7 @@ func buildIns() map[string]Expr {
 	vars["is_tuple"] = oneArg(is_type[Tuple])
 	vars["last"] = oneArg(last)
 	vars["len"] = oneArg(length)
+	vars["nth"] = nth
 	vars["print"] = oneArg(print)
 	vars["rest"] = oneArg(rest)
 	vars["rev"] = oneArg(rev)
@@ -45,6 +47,15 @@ func buildIns() map[string]Expr {
 // exit/1
 func exit(arg Expr) (Expr, error) {
 	return nil, errors.Exit{arg}
+}
+
+// error/1
+func throwError(arg Expr) (Expr, error) {
+	str, ok := arg.(String)
+	if !ok {
+		return nil, errors.NotString{arg}
+	}
+	return nil, errors.New(string(str))
 }
 
 // print/1
@@ -141,6 +152,25 @@ func length(arg Expr) (Expr, error) {
 	default:
 		return nil, errors.NotList{expr}
 	}
+}
+
+// nth/2
+func nth(args []Expr, _ *envir.Env, _ pids.Pid) (Expr, error) {
+	if len(args) != 2 {
+		return nil, errors.WrongNumberArgs{}
+	}
+	list, ok := args[0].(List)
+	if !ok {
+		return nil, errors.NotList{args[0]}
+	}
+	pos, ok := args[1].(Int)
+	if !ok {
+		return nil, errors.NotNumber{args[1]}
+	}
+	if pos < 0 || int(pos) >= list.Len() {
+		return nil, errors.New("invalid index")
+	}
+	return list.Values[pos], nil
 }
 
 // rest/1

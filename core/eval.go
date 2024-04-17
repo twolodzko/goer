@@ -112,8 +112,6 @@ func Eval(expr Expr, env *envir.Env, pid pids.Pid) (Expr, error) {
 			if err != nil {
 				return nil, err
 			}
-		case nil:
-			return nil, errors.New("empty expression")
 		default:
 			panic(fmt.Sprintf("value of type %T cannot be evaluated", val))
 		}
