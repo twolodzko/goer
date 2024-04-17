@@ -62,7 +62,8 @@ There are the following data types:
   [pattern-matching](#pattern-matching) their content.
 * Lists of other values `[1, 2, [foo, {3, 4}], "bar"]`. Lists can be concatenated with `++`. They can be cheaply
   reversed with `rev(Lst)`. Their size can be checked with `len(Lst)`. Their last value can be accessed with `last(Lst)`
-  and list containing all the values but last with `rest(Lst)`.
+  and list containing all the values but last with `rest(Lst)`. Additionally, `nth(Lst, Idx)` allows for accessing
+  the value at the `Idx` position (zero-indexed) of the list `Lst`.
 
 There are `is_atom`, `is_bool`, `is_int`, `is_str`, `is_list`, and `is_tuple` functions to check if a value belongs to 
 a specific type.
