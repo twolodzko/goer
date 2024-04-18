@@ -10,7 +10,7 @@ import (
 // Parse an expression. The expression can be an atom, integer, operation,
 // if block, function definition, function call, etc. It is a standalone unit
 // of code that can be evaluated.
-func (p *Parser) ParseExpr() (Expr, error) {
+func (p *Parser) parseExpr() (Expr, error) {
 	expr, err := p.parseTerm()
 	if err != nil {
 		return nil, err
@@ -37,16 +37,11 @@ func (p *Parser) ParseExpr() (Expr, error) {
 	next, ok = p.peek()
 	if ok && isOperator(next) {
 		p.skip()
-		rhs, err := p.ParseExpr()
+		rhs, err := p.parseExpr()
 		return newBinaryOperation(next.Value, expr, rhs), err
 	}
 
 	return expr, nil
-}
-
-// Parse series of expressions separated by "," until ".".
-func (p *Parser) ParseExprs() ([]Expr, error) {
-	return p.parseUntil(lexer.Dot)
 }
 
 // Parse a sequence of expressions, separated by "," and delimited by the `delim` token.
@@ -63,7 +58,7 @@ func (p *Parser) parseUntil(delim lexer.TokenType) ([]Expr, error) {
 	}
 
 	for {
-		expr, err := p.ParseExpr()
+		expr, err := p.parseExpr()
 		if err != nil {
 			return exprs, err
 		}
@@ -118,7 +113,7 @@ func (p *Parser) parseTerm() (Expr, error) {
 		exprs, err := p.parseUntil(lexer.BraceRight)
 		return Tuple{exprs}, err
 	case lexer.BracketLeft:
-		expr, err := p.ParseExpr()
+		expr, err := p.parseExpr()
 		if err != nil {
 			return nil, err
 		}

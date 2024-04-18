@@ -20,7 +20,7 @@ values.
 
 ## Features
 
-* The language uses Erlang-like syntax, the syntax coloring for Erlang would mostly work for it out-of-the-box. 
+* The language uses Erlang-like syntax, the syntax coloring for Erlang would mostly work for it out-of-the-box.
 * As in Erlang, everything is immutable.
 * There's extensive support for pattern matching.
 * The language is [tail-call optimized] and looping is done by making recursive function calls.
@@ -41,22 +41,20 @@ values.
 ## Language tour
 
 Expressions that are evaluated need to be finished with `.`, as in Erlang. They can consist of multiple sub-expressions,
-in such a case, they would be separated with `,`. 
+in such a case, they would be separated with `,`.
 
 ### Data types
-
-There are the following data types:
 
 * Atoms are data types defined only by their names. The names are written as words starting with a lowercase letter
   and can have letters, numbers, `_` and `@` in their names. Examples are `foo`, `other_@Atom`, etc.
 * Booleans: `true` and `false`, are special kinds of atoms. There are basic boolean operations like `not`, `and`,
   and `or`[^1] that can be applied to booleans.
-* Integers map to Go's `int` type, so are at least 32-bit signed integers. Arithmetic operations `+`, `-`, `*`, `/` 
+* Integers map to Go's `int` type, so are at least 32-bit signed integers. Arithmetic operations `+`, `-`, `*`, `/`
   (integer division), and `rem` (reminder) can be used with integers. They can also be compared with `<`, `<=`[^2],
   `>`, `>=`, and the standard `==` and `!=`[^3].
 * Strings are surrounded by double quotes, like `"Hello, World!"`. They respect the [same escape characters as Go does],
-  so `"\"Hello,\nWorld!\""` is a string that has double quotes and a newline. You can use `str` to convert an arbitrary 
-  value to a string (including functions). With `split` string can be converted to a list of single-character strings, 
+  so `"\"Hello,\nWorld!\""` is a string that has double quotes and a newline. You can use `str` to convert an arbitrary
+  value to a string (including functions). With `split` string can be converted to a list of single-character strings,
   this may be used for string manipulation. Strings can be concatenated with the `++` operator.
 * Tuples like `{foo, bar, 1, "hi", {}, false}` can contain values of other data types. They can be accessed by
   [pattern-matching](#pattern-matching) their content.
@@ -65,7 +63,7 @@ There are the following data types:
   and list containing all the values but last with `rest(Lst)`. Additionally, `nth(Lst, Idx)` allows for accessing
   the value at the `Idx` position (zero-indexed) of the list `Lst`.
 
-There are `is_atom`, `is_bool`, `is_int`, `is_str`, `is_list`, and `is_tuple` functions to check if a value belongs to 
+There are `is_atom`, `is_bool`, `is_int`, `is_str`, `is_list`, and `is_tuple` functions to check if a value belongs to
 a specific type.
 
 Functions can have lowercase names as well, so `print("hi")` is a function with the `"hi"` argument, not an atom.
@@ -82,15 +80,15 @@ programming patterns.
 
 In Erlang, the [recommended way](erlang-lists) to add an element to a list is by using the cons operator
 `[Elem | List]` (which has *O(1)* complexity). The syntax is not available in `goer`. Since underneath `goer`'s lists
-are [Go slices], the cheaper way is to append the new element at the back of the slice. For this reason, `goer` rather 
+are [Go slices], the cheaper way is to append the new element at the back of the slice. For this reason, `goer` rather
 uses the `++` operator, which in Erlang is mostly used to combine lists, e.g. `[1,2] ++ [3,4] == [1,2,3,4]`.
 In `goer`, to add an element to the list, you would use `List ++ Elem` which adds the element at the back of the list.
 The `++` operator is overloaded, `[foo] ++ bar` is interpreted the same as `[foo] ++ [bar]`.
 
-For the same reason as above, head and tail functions are not as useful for dealing with lists as in Erlang. 
-Instead, there are `last` and `rest` for accessing the *N*th and everything but the *N*th value.
+For the same reason as above, head and tail functions are not as useful for dealing with lists as in Erlang.
+Instead, there are `last` and `rest` for accessing the last and everything but the last value.
 
-This leads to promoting different patterns, for example, to reverse a list in Erlang you [could use a recursive function]:
+This leads to different patterns, for example, to reverse a list in Erlang you [could use a recursive function]:
 
 ```erlang
 reverse(Lst) -> reverse(Lst,[]).
@@ -124,10 +122,10 @@ This prevents [race conditions] and promotes [*communicating by message passing,
 
 ### Pattern matching
 
-Many functional languages heavily use pattern matching. The same applies to Erlang and `goer`. As shown above, 
-assigning a value to the variable is done using the ["match" operator] `=` which does pattern matching. `X = 1` means
-"match `X` with `1`", if `X` didn't have any value before, it now is equivalent to `1`. The next attempt to match
-it with another value would fail with an error. Pattern matching can also be used to access the values of tuples:
+Many functional languages heavily use pattern matching. The same applies to Erlang and `goer`. As shown above,
+assigning a value to the variable is done using the ["match" operator] `=`. `X = 1` means
+"match `X` against `1`", if `X` didn't have any value before, it now is equivalent to `1`. The next attempt to match
+it with a different value would fail with an error. Pattern matching can also be used to access the values of tuples:
 
 ```erlang
 {First, 2, Third} = {1, 2, 3}.
@@ -136,11 +134,11 @@ Third = 3.  % ok
 ```
 
 There is also the wildcard character `_` which matches anything. For example, we could match elements of a four-element
-list:
+list to extract a specific one:
 
 ```erlang
 [_, _, X, _] = [foo, bar, baz, qux].
-X = baz.  % ok 
+X = baz.  % ok
 ```
 
 (The Erlang's `[Head | Tail]` matching is not implemented.)
@@ -160,10 +158,10 @@ if
 end
 ```
 
-The conditions `Cond1` ... `CondN` need to evaluate to booleans. For example, 
+The conditions `Cond1` ... `CondN` need to evaluate to booleans. For example,
 
 ```erlang
-if 
+if
     X > 5 -> yes;
     _ -> no
 end
@@ -194,7 +192,7 @@ fun fizzbuzz (X) ->
 end
 ```
 
-We could use the `case` statement with the guard (after `when`) to check if a value is larger than 5 in an
+We could use the `case` with the guard (after `when`) to check if a value is larger than 5 in an
 overengineered way:
 
 ```erlang
@@ -206,10 +204,10 @@ end
 
 Unlike Erlang, there are no restrictions on guard statements other than that they need to evaluate to booleans.
 
-In both `if` and `case` throw an error when no branch matches the conditions.
+Both `if` and `case` would throw an error when no branch matches the conditions.
 
-Instead of Erlang's `try ... catch ... end`, `goer` has a much simpler `try ... recover ... end` statement. It evaluates
-the expression in the `try` block and in case of an error, and only if, it executes the expression in the 
+Instead of Erlang's `try ... catch ... end`, there is a much simpler `try ... recover ... end` statement. It evaluates
+the expression in the `try` block and in case of an error, and only if, it executes the expression in the
 `recover` block. It is not possible to catch specific errors. Neither of the blocks can be empty.
 
 ```erlang
@@ -222,13 +220,13 @@ end
 
 ### Functions
 
-Erlang has two ways of defining the functions. It allows for either anonymous functions like
+Erlang has two ways of defining the functions. It allows for either anonymous functions
 
 ```erlang
 fun(X) -> X + 10 end
 ```
 
-or named functions like
+or named functions
 
 ```erlang
 fact(0) -> 1;
@@ -238,7 +236,7 @@ fact(N) when N > 0 ->
 
 `goer` combines both syntaxes. The anonymous functions are written the same way, but named functions are written
 like the anonymous ones, but with the (atom-like) name after the `fun` keyword. This syntax is similar to
-[OCaml's `function`]. The `fact` function from above in `goer` would be 
+[OCaml's `function`]. The `fact` function from above in `goer` would be
 
 ```erlang
 fun fact
@@ -249,7 +247,7 @@ end
 ```
 
 Every function, build-in or user-defined, needs to return something. Side-effects-only functions are not possible.
-When it is not possible to return anything, some functions would throw an error, for example, `last([])` would fail, 
+When it is not possible to return anything, some functions would throw an error, for example, `last([])` would fail,
 because an empty list does not have the last value.
 
 ### Concurrency and message passing
@@ -264,7 +262,7 @@ Pid = spawn(fun() -> print("hi!") end).
 ```
 
 The process ID can be used to send messages and to communicate with the other processes. The `!` operator means
-send `Msg` message to the process identified by `Pid`. Sending a message to a process that is not alive anymore 
+send `Msg` message to the process identified by `Pid`. Sending a message to a process that is not alive anymore
 would have no effect and no error would be shown as well, the same as in Erlang.
 
 ```erlang
@@ -300,7 +298,7 @@ end,
 
 Pid = spawn(loop),
 Pid ! {self(), ping},
-receive 
+receive
     {Pid, pong} -> ok
 after
     100 -> timeout
@@ -310,7 +308,7 @@ end.
 It is also [not possible] to kill the goroutine from the "outside", so there's no `exit/2` function in `goer` to
 do this. It could be implemented in a similar way as above, where the process would terminate itself after receiving
 the "terminate" message. It is similar to the `link` function, which makes the linked processes in Erlang [die together].
-Linking could be implemented in `goer` by the linked processes keeping the list of linked processes and on exit 
+Linking could be implemented in `goer` by the linked processes keeping the list of linked processes and on exit
 (you could use `try ... recover ... end` here) they would send the "terminate" signal to the other processes.
 
 ## Grammar

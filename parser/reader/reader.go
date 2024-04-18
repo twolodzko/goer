@@ -15,6 +15,7 @@ func NewReader(in io.Reader) *Reader {
 	return &Reader{bufio.NewReader(in), ""}
 }
 
+// Return next chunk of text (code block) to be parsed.
 func (reader *Reader) Next() (string, error) {
 	var out string
 	isString := false

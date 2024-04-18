@@ -7,7 +7,7 @@ import (
 
 // Parse the "case" statement.
 func (p *Parser) parseCase() (Expr, error) {
-	arg, err := p.ParseExpr()
+	arg, err := p.parseExpr()
 	if err != nil {
 		return nil, err
 	}
@@ -130,7 +130,7 @@ func parseIfBranch(p *Parser) (IfBranch, error) {
 		err    error
 	)
 
-	branch.Cond, err = p.ParseExpr()
+	branch.Cond, err = p.parseExpr()
 	if err != nil {
 		return branch, err
 	}
@@ -151,7 +151,7 @@ func parsePatternBranch(p *Parser) (PatternBranch, error) {
 		err    error
 	)
 
-	branch.Pattern, err = p.ParseExpr()
+	branch.Pattern, err = p.parseExpr()
 	if err != nil {
 		return branch, err
 	}
@@ -195,7 +195,7 @@ func parseBranches[T any](p *Parser, parse func(*Parser) (T, error)) ([]T, error
 func (p *Parser) parseBranchBody() ([]Expr, error) {
 	var body []Expr
 	for {
-		expr, err := p.ParseExpr()
+		expr, err := p.parseExpr()
 		if err != nil {
 			return nil, err
 		}

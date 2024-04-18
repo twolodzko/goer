@@ -30,11 +30,12 @@ func (p *Parser) skip() {
 	p.pos++
 }
 
+// Parse the string.
 func Parse(input string) ([]Expr, error) {
 	tokens, err := lexer.Tokenize(input)
 	if err != nil {
 		return nil, err
 	}
 	parser := Parser{tokens, 0}
-	return parser.ParseExprs()
+	return parser.parseUntil(lexer.Dot)
 }
